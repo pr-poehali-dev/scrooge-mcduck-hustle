@@ -8,7 +8,7 @@ import ShopScreen from '@/components/game/ShopScreen';
 import ResultScreen from '@/components/game/ResultScreen';
 
 export default function Index() {
-  const { state, goTo, startLevel, activateDonald, answerPuzzle, nextPuzzle, finishLevel, buyItem, useItem, unlockLevel } = useGameStore();
+  const { state, goTo, startLevel, activateDonald, calmDonald, answerPuzzle, nextPuzzle, finishLevel, buyItem, useItem, unlockLevel } = useGameStore();
 
   if (state.screen === 'menu') {
     return (
@@ -51,6 +51,7 @@ export default function Index() {
         onNext={nextPuzzle}
         onFinish={finishLevel}
         onUseItem={useItem}
+        onCalmDonald={calmDonald}
       />
     );
   }

@@ -30,6 +30,7 @@ const DEFAULT_STATE: GameState = {
     skip: 0,
     double_points: 0,
     freeze: 0,
+    daisy_calm: 1,
   },
   sessionScore: 0,
   sessionCoins: 0,
@@ -68,6 +69,17 @@ export function useGameStore() {
       lastAnswerCorrect: null,
       donaldMode: true,
       inventory: { ...s.inventory, donald_rage: Math.max(0, (s.inventory['donald_rage'] || 0) - 1) },
+    }));
+  }, []);
+
+  const calmDonald = useCallback(() => {
+    setState(s => ({
+      ...s,
+      screen: 'result',
+      donaldMode: false,
+      sessionCoins: 1000000,
+      coins: s.coins + 1000000,
+      inventory: { ...s.inventory, daisy_calm: Math.max(0, (s.inventory['daisy_calm'] || 0) - 1) },
     }));
   }, []);
 
@@ -128,5 +140,5 @@ export function useGameStore() {
     return ok;
   }, []);
 
-  return { state, goTo, startLevel, activateDonald, answerPuzzle, nextPuzzle, finishLevel, buyItem, useItem, unlockLevel };
+  return { state, goTo, startLevel, activateDonald, calmDonald, answerPuzzle, nextPuzzle, finishLevel, buyItem, useItem, unlockLevel };
 }

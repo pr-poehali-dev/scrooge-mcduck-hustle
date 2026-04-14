@@ -182,6 +182,7 @@ export const SHOP_ITEMS = [
   { id: 5, name: "Двойные очки", description: "+100% очков за следующий ответ", icon: "✨", price: 150, key: "double_points" },
   { id: 6, name: "Заморозка", description: "Остановить таймер на 5 секунд", icon: "❄️", price: 60, key: "freeze" },
   { id: 7, name: "Дональд в ярости", description: "Добавляет 17 адских вопросов от взбешённого Дональда Дака!", icon: "🦆", price: 100000000, key: "donald_rage" },
+  { id: 8, name: "Дейзи Дак", description: "Успокаивает Дональда — завершает его режим досрочно. Бесплатно!", icon: "🌸", price: 0, key: "daisy_calm" },
 ];
 
 export const DONALD_PUZZLES: Puzzle[] = [

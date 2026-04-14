@@ -12,6 +12,7 @@ interface Props {
   onNext: () => void;
   onFinish: (levelId: number, score: number, reward: number) => void;
   onUseItem: (key: string) => void;
+  onCalmDonald?: () => void;
 }
 
 interface ScorePop {
@@ -20,7 +21,7 @@ interface ScorePop {
   x: number;
 }
 
-export default function GameScreen({ levelId, puzzleIndex, coins, inventory, donaldMode, onAnswer, onNext, onFinish, onUseItem }: Props) {
+export default function GameScreen({ levelId, puzzleIndex, coins, inventory, donaldMode, onAnswer, onNext, onFinish, onUseItem, onCalmDonald }: Props) {
   const level = donaldMode ? null : LEVELS.find(l => l.id === levelId) ?? null;
   const puzzleList: Puzzle[] = donaldMode ? DONALD_PUZZLES : (level?.puzzles ?? []);
   const puzzle: Puzzle = puzzleList[puzzleIndex];
@@ -189,9 +190,25 @@ export default function GameScreen({ levelId, puzzleIndex, coins, inventory, don
               <div className="text-xs text-muted-foreground">{puzzleIndex + 1} / {puzzleList.length}</div>
             </div>
           </div>
-          <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full">
-            <span>🪙</span>
-            <span className="font-display font-bold text-gold">{coins.toLocaleString()}</span>
+          <div className="flex items-center gap-2">
+            {donaldMode && onCalmDonald && (inventory['daisy_calm'] || 0) > 0 && (
+              <button
+                onClick={onCalmDonald}
+                className="flex items-center gap-1.5 bg-pink-600/90 hover:bg-pink-500 text-white text-xs font-display font-bold px-3 py-1.5 rounded-full transition-all active:scale-95 animate-pulse"
+                title="Позвать Дейзи — успокоить Дональда"
+              >
+                <img
+                  src="https://cdn.poehali.dev/projects/55519ddb-2563-46a6-93e0-f3902bfb09ff/files/184a4fab-6a9a-4541-9e66-2376f5783226.jpg"
+                  className="w-5 h-5 object-contain rounded-full"
+                  alt="Дейзи"
+                />
+                🌸 Дейзи
+              </button>
+            )}
+            <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full">
+              <span>🪙</span>
+              <span className="font-display font-bold text-gold">{coins.toLocaleString()}</span>
+            </div>
           </div>
         </div>
 

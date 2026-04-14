@@ -14,6 +14,7 @@ export default function ShopScreen({ coins, inventory, onBuy, onActivateDonald, 
   const [bought, setBought] = useState<number | null>(null);
   const [failed, setFailed] = useState<number | null>(null);
   const [donaldBought, setDonaldBought] = useState(false);
+  const [daisyBought, setDaisyBought] = useState(false);
 
   const handleBuy = (item: typeof SHOP_ITEMS[0]) => {
     if (item.key === 'donald_rage') {
@@ -175,6 +176,50 @@ export default function ShopScreen({ coins, inventory, onBuy, onActivateDonald, 
                   ? <><span>🦆</span> КВААААК!</>
                   : <><span>🪙</span> {donaldItem.price.toLocaleString()}</>
                 }
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Дейзи Дак — успокоить Дональда, бесплатно */}
+        <div
+          className="mt-4 animate-fade-in relative rounded-2xl overflow-hidden border-2 border-pink-400/30 bg-gradient-to-br from-pink-950/30 to-purple-950/20 transition-all duration-500"
+          style={{ animationDelay: '0.55s', opacity: 0 }}
+        >
+          <div className="p-4 flex gap-4 items-center">
+            <div className="flex-shrink-0">
+              <img
+                src="https://cdn.poehali.dev/projects/55519ddb-2563-46a6-93e0-f3902bfb09ff/files/184a4fab-6a9a-4541-9e66-2376f5783226.jpg"
+                alt="Дейзи Дак"
+                className="w-20 h-20 object-contain drop-shadow-lg animate-float"
+              />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <span className="font-display font-bold text-lg text-pink-300 tracking-wide">Дейзи Дак</span>
+                <span className="text-xs bg-pink-500/20 border border-pink-400/40 text-pink-300 px-2 py-0.5 rounded-full">БЕСПЛАТНО</span>
+                {(inventory['daisy_calm'] || 0) > 0 && (
+                  <span className="text-xs font-display font-bold text-gold bg-gold/10 border border-gold/20 px-2 py-0.5 rounded-full">×{inventory['daisy_calm']}</span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                Успокаивает Дональда — используй во время его режима, чтобы досрочно завершить испытание!
+              </p>
+              <button
+                onClick={() => {
+                  const success = onBuy('daisy_calm', 0);
+                  if (success) {
+                    setDaisyBought(true);
+                    setTimeout(() => setDaisyBought(false), 1200);
+                  }
+                }}
+                className={`w-full py-2.5 rounded-xl text-sm font-display font-bold tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 ${
+                  daisyBought
+                    ? 'bg-pink-400/20 text-pink-300 border border-pink-400/30'
+                    : 'bg-pink-600 text-white hover:bg-pink-500'
+                }`}
+              >
+                {daisyBought ? <><span>🌸</span> Добавлено!</> : <><span>🌸</span> Получить бесплатно</>}
               </button>
             </div>
           </div>
