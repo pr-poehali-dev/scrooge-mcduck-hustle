@@ -6,14 +6,29 @@ interface Props {
   coins: number;
   inventory: Record<string, number>;
   onBuy: (key: string, price: number) => boolean;
+  onActivateDonald: () => void;
   onBack: () => void;
 }
 
-export default function ShopScreen({ coins, inventory, onBuy, onBack }: Props) {
+export default function ShopScreen({ coins, inventory, onBuy, onActivateDonald, onBack }: Props) {
   const [bought, setBought] = useState<number | null>(null);
   const [failed, setFailed] = useState<number | null>(null);
+  const [donaldBought, setDonaldBought] = useState(false);
 
   const handleBuy = (item: typeof SHOP_ITEMS[0]) => {
+    if (item.key === 'donald_rage') {
+      const success = onBuy(item.key, item.price);
+      if (success) {
+        setDonaldBought(true);
+        setTimeout(() => {
+          onActivateDonald();
+        }, 1500);
+      } else {
+        setFailed(item.id);
+        setTimeout(() => setFailed(null), 800);
+      }
+      return;
+    }
     const success = onBuy(item.key, item.price);
     if (success) {
       setBought(item.id);
@@ -23,6 +38,9 @@ export default function ShopScreen({ coins, inventory, onBuy, onBack }: Props) {
       setTimeout(() => setFailed(null), 800);
     }
   };
+
+  const regularItems = SHOP_ITEMS.filter(i => i.key !== 'donald_rage');
+  const donaldItem = SHOP_ITEMS.find(i => i.key === 'donald_rage')!;
 
   return (
     <div className="min-h-screen grid-bg flex flex-col px-4 py-6">
@@ -59,8 +77,8 @@ export default function ShopScreen({ coins, inventory, onBuy, onBack }: Props) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          {SHOP_ITEMS.map((item, idx) => {
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {regularItems.map((item, idx) => {
             const owned = inventory[item.key] || 0;
             const canAfford = coins >= item.price;
             const isBought = bought === item.id;
@@ -82,12 +100,10 @@ export default function ShopScreen({ coins, inventory, onBuy, onBack }: Props) {
                     </div>
                   )}
                 </div>
-
                 <div>
                   <div className="font-display font-bold text-base tracking-wide">{item.name}</div>
                   <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{item.description}</div>
                 </div>
-
                 <button
                   onClick={() => handleBuy(item)}
                   className={`w-full py-2.5 rounded-xl text-sm font-display font-bold tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 ${
@@ -99,18 +115,72 @@ export default function ShopScreen({ coins, inventory, onBuy, onBack }: Props) {
                   }`}
                   disabled={!canAfford}
                 >
-                  {isBought ? (
-                    <><span>✓</span> Куплено</>
-                  ) : (
-                    <><span>🪙</span> {item.price}</>
-                  )}
+                  {isBought ? <><span>✓</span> Куплено</> : <><span>🪙</span> {item.price.toLocaleString()}</>}
                 </button>
               </div>
             );
           })}
         </div>
 
-        <div className="mt-6 glass rounded-xl p-4 animate-fade-in text-center">
+        {/* Дональд Дак — особый предмет */}
+        <div
+          className={`animate-fade-in relative rounded-2xl overflow-hidden border-2 transition-all duration-500 ${
+            donaldBought
+              ? 'border-red-500 bg-red-500/10'
+              : failed === donaldItem.id
+              ? 'border-ruby/60 animate-shake'
+              : 'border-red-800/40 bg-gradient-to-br from-red-950/40 to-orange-950/30'
+          }`}
+          style={{ animationDelay: '0.45s', opacity: 0 }}
+        >
+          {donaldBought && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 bg-black/60 animate-scale-in">
+              <div className="text-center">
+                <div className="text-5xl mb-2 animate-shake" style={{ display: 'inline-block' }}>🦆</div>
+                <div className="font-display font-bold text-red-400 text-lg uppercase tracking-widest">
+                  КВААААК! ЗАПУСКАЮ!
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="p-4 flex gap-4 items-center">
+            <div className="flex-shrink-0">
+              <img
+                src="https://cdn.poehali.dev/projects/55519ddb-2563-46a6-93e0-f3902bfb09ff/files/24746f84-1be4-4127-8e76-5dfa77c94361.jpg"
+                alt="Дональд Дак в ярости"
+                className="w-20 h-20 object-contain drop-shadow-lg animate-float"
+              />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-display font-bold text-lg text-red-400 tracking-wide">Дональд в ярости!</span>
+                <span className="text-xs bg-red-500/20 border border-red-500/40 text-red-400 px-2 py-0.5 rounded-full">ЭКСКЛЮЗИВ</span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+                Разъярённый Дональд Дак задаёт 17 адских вопросов. Только для смельчаков!
+              </p>
+              <button
+                onClick={() => handleBuy(donaldItem)}
+                disabled={coins < donaldItem.price || donaldBought}
+                className={`w-full py-2.5 rounded-xl text-sm font-display font-bold tracking-wide transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 ${
+                  donaldBought
+                    ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                    : coins >= donaldItem.price
+                    ? 'bg-red-600 text-white hover:bg-red-500'
+                    : 'bg-secondary text-muted-foreground cursor-not-allowed'
+                }`}
+              >
+                {donaldBought
+                  ? <><span>🦆</span> КВААААК!</>
+                  : <><span>🪙</span> {donaldItem.price.toLocaleString()}</>
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 glass rounded-xl p-4 animate-fade-in text-center">
           <div className="text-sm text-muted-foreground">
             Монеты зарабатываются за прохождение уровней.<br />
             Отвечай быстрее — получай больше!

@@ -12,6 +12,7 @@ export interface GameState {
   sessionScore: number;
   sessionCoins: number;
   lastAnswerCorrect: boolean | null;
+  donaldMode: boolean;
 }
 
 const DEFAULT_STATE: GameState = {
@@ -33,6 +34,7 @@ const DEFAULT_STATE: GameState = {
   sessionScore: 0,
   sessionCoins: 0,
   lastAnswerCorrect: null,
+  donaldMode: false,
 };
 
 export function useGameStore() {
@@ -51,6 +53,21 @@ export function useGameStore() {
       sessionScore: 0,
       sessionCoins: 0,
       lastAnswerCorrect: null,
+      donaldMode: false,
+    }));
+  }, []);
+
+  const activateDonald = useCallback(() => {
+    setState(s => ({
+      ...s,
+      screen: 'game',
+      currentLevel: -1,
+      currentPuzzleIndex: 0,
+      sessionScore: 0,
+      sessionCoins: 0,
+      lastAnswerCorrect: null,
+      donaldMode: true,
+      inventory: { ...s.inventory, donald_rage: Math.max(0, (s.inventory['donald_rage'] || 0) - 1) },
     }));
   }, []);
 
@@ -111,5 +128,5 @@ export function useGameStore() {
     return ok;
   }, []);
 
-  return { state, goTo, startLevel, answerPuzzle, nextPuzzle, finishLevel, buyItem, useItem, unlockLevel };
+  return { state, goTo, startLevel, activateDonald, answerPuzzle, nextPuzzle, finishLevel, buyItem, useItem, unlockLevel };
 }

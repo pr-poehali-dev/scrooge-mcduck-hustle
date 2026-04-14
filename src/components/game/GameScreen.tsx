@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
-import { LEVELS, Puzzle } from '@/data/puzzles';
+import { LEVELS, DONALD_PUZZLES, Puzzle } from '@/data/puzzles';
 
 interface Props {
   levelId: number;
   puzzleIndex: number;
   coins: number;
   inventory: Record<string, number>;
+  donaldMode?: boolean;
   onAnswer: (correct: boolean, points: number, timeBonus: number, doublePoints: boolean) => number;
   onNext: () => void;
   onFinish: (levelId: number, score: number, reward: number) => void;
@@ -19,10 +20,11 @@ interface ScorePop {
   x: number;
 }
 
-export default function GameScreen({ levelId, puzzleIndex, coins, inventory, onAnswer, onNext, onFinish, onUseItem }: Props) {
-  const level = LEVELS.find(l => l.id === levelId)!;
-  const puzzle: Puzzle = level.puzzles[puzzleIndex];
-  const isLast = puzzleIndex === level.puzzles.length - 1;
+export default function GameScreen({ levelId, puzzleIndex, coins, inventory, donaldMode, onAnswer, onNext, onFinish, onUseItem }: Props) {
+  const level = donaldMode ? null : LEVELS.find(l => l.id === levelId) ?? null;
+  const puzzleList: Puzzle[] = donaldMode ? DONALD_PUZZLES : (level?.puzzles ?? []);
+  const puzzle: Puzzle = puzzleList[puzzleIndex];
+  const isLast = puzzleIndex === puzzleList.length - 1;
 
   const [timeLeft, setTimeLeft] = useState(puzzle.timeLimit);
   const [selected, setSelected] = useState<number | null>(null);
@@ -137,7 +139,7 @@ export default function GameScreen({ levelId, puzzleIndex, coins, inventory, onA
 
   const handleContinue = () => {
     if (isLast) {
-      onFinish(levelId, totalScore, level.reward);
+      onFinish(levelId, totalScore, donaldMode ? 5000000 : (level?.reward ?? 0));
     } else {
       onNext();
     }
@@ -170,10 +172,21 @@ export default function GameScreen({ levelId, puzzleIndex, coins, inventory, onA
       <div className="max-w-md mx-auto w-full flex flex-col gap-5">
         <div className="flex items-center justify-between animate-fade-in">
           <div className="flex items-center gap-3">
-            <span className="text-xl">{level.icon}</span>
+            {donaldMode ? (
+              <img
+                src="https://cdn.poehali.dev/projects/55519ddb-2563-46a6-93e0-f3902bfb09ff/files/24746f84-1be4-4127-8e76-5dfa77c94361.jpg"
+                alt="Дональд"
+                className="w-10 h-10 object-contain animate-shake"
+                style={{ animationIterationCount: 'infinite', animationDuration: '0.8s' }}
+              />
+            ) : (
+              <span className="text-xl">{level?.icon}</span>
+            )}
             <div>
-              <div className="font-display font-bold text-sm tracking-wider text-foreground">{level.title}</div>
-              <div className="text-xs text-muted-foreground">{puzzleIndex + 1} / {level.puzzles.length}</div>
+              <div className={`font-display font-bold text-sm tracking-wider ${donaldMode ? 'text-red-400' : 'text-foreground'}`}>
+                {donaldMode ? 'КВААААК!!!' : level?.title}
+              </div>
+              <div className="text-xs text-muted-foreground">{puzzleIndex + 1} / {puzzleList.length}</div>
             </div>
           </div>
           <div className="flex items-center gap-2 glass px-3 py-1.5 rounded-full">
