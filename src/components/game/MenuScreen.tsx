@@ -19,7 +19,14 @@ export default function MenuScreen({ coins, totalScore, completedLevels, onStart
 
       <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-md">
         <div className="animate-fade-in stagger-1 flex flex-col items-center gap-2">
-          <div className="text-6xl animate-float">🧩</div>
+          <div className="relative w-52 h-52 mb-2">
+            <img
+              src="https://cdn.poehali.dev/projects/55519ddb-2563-46a6-93e0-f3902bfb09ff/files/02ea28bf-b3c0-4d67-8a9d-cc453e63dd53.jpg"
+              alt="Скрудж купается в деньгах"
+              className="w-full h-full object-contain animate-float drop-shadow-2xl"
+            />
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-32 h-4 bg-gold/20 blur-xl rounded-full" />
+          </div>
           <h1 className="font-display text-5xl font-bold tracking-widest text-gold uppercase mt-2">
             МозгоБанк
           </h1>
