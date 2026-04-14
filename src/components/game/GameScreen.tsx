@@ -211,8 +211,20 @@ export default function GameScreen({ levelId, puzzleIndex, coins, inventory, onA
           </div>
           <p className="text-base font-medium leading-relaxed">{puzzle.question}</p>
           {showHint && (
-            <div className="mt-3 p-3 bg-gold/5 border border-gold/20 rounded-xl text-sm text-gold/80 animate-scale-in">
-              💬 {puzzle.explanation}
+            <div className="mt-4 animate-scale-in">
+              <div className="relative bg-gold/5 border border-gold/25 rounded-2xl p-4 pl-5">
+                <div className="absolute -top-10 -right-2 w-20 h-20 pointer-events-none">
+                  <img
+                    src="https://cdn.poehali.dev/projects/55519ddb-2563-46a6-93e0-f3902bfb09ff/files/ca20b10a-e288-433a-babf-1fa7fad39229.jpg"
+                    alt="Скрудж Макдак"
+                    className="w-full h-full object-contain drop-shadow-lg animate-float"
+                  />
+                </div>
+                <div className="text-xs text-gold/60 uppercase tracking-widest mb-1.5 font-display font-bold">
+                  Скрудж советует:
+                </div>
+                <p className="text-sm text-foreground/90 leading-relaxed pr-8">{puzzle.explanation}</p>
+              </div>
             </div>
           )}
         </div>
