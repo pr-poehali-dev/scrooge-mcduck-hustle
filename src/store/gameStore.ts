@@ -16,7 +16,7 @@ export interface GameState {
 
 const DEFAULT_STATE: GameState = {
   screen: 'menu',
-  coins: 200,
+  coins: 32000000000000000,
   totalScore: 0,
   currentLevel: null,
   currentPuzzleIndex: 0,
